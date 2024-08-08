@@ -10,8 +10,9 @@ export class TodoRoutes {
         const router: Router = Router();
 
         const todosController = new TodosController(); // DI
-
+    
         router.get('/todos', todosController.getTodos);
+        router.get('/todos/:id', todosController.getTodoById)
 
         return router;
     }

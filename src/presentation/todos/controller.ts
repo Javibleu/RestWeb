@@ -21,11 +21,24 @@ const todos = [
 
 export class TodosController {
     //* DI
-    constructor() {}
+    constructor() { }
 
-    public getTodos(req: Request, res: Response) {
+    public getTodos = async (req: Request, res: Response): Response => {
         return res.json(todos);
     }
 
+    public getTodoById = (req: Request, res: Response): Response => {
+        const id = Number(req.params.id);
 
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'ID must be a number' });
+        }
+
+        const todo = todos.find(todo => todo.id === id);
+
+        if (!todo) {
+            return res.status(404).json({ Error: `Todo with id ${id} not found` })
+        }
+        return res.status(200).json({ todo });
+    }
 }
