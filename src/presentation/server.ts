@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import path from 'path';
+import { errorHandler } from '../middlewares/error-handler';
 
 interface ServerOptions {
     port: number
@@ -16,7 +17,7 @@ export class Server {
 
     constructor(serverOptions: ServerOptions) {
         const { port, public_path = 'public', routes } = serverOptions;
-        
+
         this.port = port;
         this.publicPath = public_path;
         this.routes = routes;
@@ -37,8 +38,11 @@ export class Server {
             const indexPath = path.join(__dirname, `../../${this.publicPath}/index.html`);
             res.sendFile(indexPath);
         })
-        // console.log(this.routes);
-        
+
+
+        // Error-handling middleware should be the last middleware
+        this.app.use(errorHandler);
+
         // listen
         this.app.listen(3000, () => {
             console.log('Server is running on http://localhost:3000')
