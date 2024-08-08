@@ -43,10 +43,10 @@ export class TodosController {
     }
 
     public createTodo = (req: Request, res: Response): Response => {
-        let { title , completed } = req.body;
+        let { title, completed } = req.body;
         completed = completed === 'true' ? true : false;
 
-        if(!title && !completed) {
+        if (!title && !completed) {
             return res.status(400).json({ error: 'title or completed must be provided' });
         }
         todos.push({ id: todos.length + 1, title, completed });
@@ -66,5 +66,25 @@ export class TodosController {
         todo.completed = completed || todo.completed;
 
         return res.status(200).json({ message: 'Todo updated successfully' });
+    }
+
+    public deleteTodo = (req: Request, res: Response): Response => {
+        const id = Number(req.params.id);
+
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'ID must be a number' });
+        }
+
+        const todoIndex = todos.findIndex(todo => todo.id === id);
+
+        if(todoIndex === -1){
+            return res.status(404).json({ error: `ID ${id} not found`});
+        }
+
+        const deletedTodo = todos.splice(todoIndex, 1);
+
+        return res.status(200).json({ message: 'Todo deleted successfully',
+            todo: deletedTodo
+         });
     }
 }
