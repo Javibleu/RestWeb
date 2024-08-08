@@ -30,7 +30,8 @@ export class Server {
 
 
         // Middlewares
-
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(express.json());
         // Routes
         this.app.use(this.routes);
         // SPA
@@ -38,8 +39,6 @@ export class Server {
             const indexPath = path.join(__dirname, `../../${this.publicPath}/index.html`);
             res.sendFile(indexPath);
         })
-
-
         // Error-handling middleware should be the last middleware
         this.app.use(errorHandler);
 
