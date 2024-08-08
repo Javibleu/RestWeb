@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import path from 'path';
 import { errorHandler } from '../middlewares/error-handler';
+import { envs } from '../config/envs';
 
 interface ServerOptions {
     port: number
@@ -43,8 +44,8 @@ export class Server {
         this.app.use(errorHandler);
 
         // listen
-        this.app.listen(3000, () => {
-            console.log('Server is running on http://localhost:3000')
+        this.app.listen(envs.PORT, () => {
+            console.log(`Server is running on port ${envs.PORT}`);
         });
     }
 }
