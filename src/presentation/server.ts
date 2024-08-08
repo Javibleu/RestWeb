@@ -1,9 +1,10 @@
-import express from 'express';
+import express, { Router } from 'express';
 import path from 'path';
 
 interface ServerOptions {
     port: number
     public_path?: string
+    routes: Router
 }
 
 export class Server {
@@ -11,10 +12,14 @@ export class Server {
     private app = express();
     private readonly port: number;
     private readonly publicPath: string;
+    private readonly routes: Router;
 
     constructor(serverOptions: ServerOptions) {
-        this.port = serverOptions.port;
-        this.publicPath = serverOptions.public_path || 'public';
+        const { port, public_path = 'public', routes } = serverOptions;
+        
+        this.port = port;
+        this.publicPath = public_path;
+        this.routes = routes;
     }
 
     async start() {
@@ -24,15 +29,16 @@ export class Server {
 
 
         // Middlewares
-        this.app.get('/hello', (req, res) => {
-            res.send('Hello World')
-        });
-        
+
+        // Routes
+        this.app.use(this.routes);
+        // SPA
         this.app.get('*', (req, res) => {
             const indexPath = path.join(__dirname, `../../${this.publicPath}/index.html`);
             res.sendFile(indexPath);
         })
-
+        // console.log(this.routes);
+        
         // listen
         this.app.listen(3000, () => {
             console.log('Server is running on http://localhost:3000')
