@@ -23,7 +23,7 @@ export class TodosController {
     //* DI
     constructor() { }
 
-    public getTodos = async (req: Request, res: Response): Response => {
+    public getTodos = (req: Request, res: Response): Response => {
         return res.json(todos);
     }
 
