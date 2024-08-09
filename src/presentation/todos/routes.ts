@@ -12,6 +12,7 @@ export class TodoRoutes {
         const todosController = new TodosController(); // DI
     
         router.get('/todos', todosController.getTodos);
+        router.get('/users', todosController.getUsers);
         router.get('/todos/:id', todosController.getTodoById);
         router.post('/todos', todosController.createTodo);
         router.put('/todos/:id', todosController.updateTodo);

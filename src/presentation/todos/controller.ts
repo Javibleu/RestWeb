@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { prisma } from "../../data/postgres";
 
 const todos = [
     {
@@ -22,6 +23,15 @@ const todos = [
 export class TodosController {
     //* DI
     constructor() { }
+
+    public getUsers = async (req: Request, res: Response): Promise<Response> => {
+
+        const users = await prisma.users.findMany({
+            take: 10,
+            skip: 10,
+    });
+        return res.json(users);
+    }
 
     public getTodos = (req: Request, res: Response): Response => {
         return res.json(todos);

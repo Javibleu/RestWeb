@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model clinic {
+  clinic_id     Int     @id @default(autoincrement())
+  name          String? @db.VarChar(40)
+  contact       String? @db.VarChar(40)
+  email         String? @db.VarChar(40)
+  refilldestine Int?
+}
+
+model doctor {
+  id           Int     @id @default(autoincrement())
+  publicname   String  @db.VarChar(40)
+  phone        String? @db.VarChar(40)
+  email        String? @db.VarChar(40)
+  refill       Int?
+  internalname String? @db.VarChar(40)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model logger {
+  date String? @db.VarChar(100)
+
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 2 String? @map("2") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 3 String? @map("3") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 4 String? @map("4") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 5 String? @map("5") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 6 String? @map("6") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 7 String? @map("7") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 8 String? @map("8") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 9 String? @map("9") @db.VarChar(100)
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 10 String? @map("10") @db.VarChar(100)
+  @@ignore
+}
+
+model med {
+  med_id      Int      @id @default(autoincrement())
+  name        String?  @db.VarChar
+  description String?  @db.VarChar
+  clncomm     Decimal? @db.Decimal
+  pxcomm      Decimal? @db.Decimal
+}
+
+model medorder {
+  datereceived     DateTime? @db.Timestamp(6)
+  datecompleted    DateTime? @db.Timestamp(6)
+  status           String?   @db.VarChar(10)
+  clinic_id        Int?
+  comments         String?   @db.VarChar(1200)
+  pxdoctor         String?   @db.VarChar
+  med_id           Decimal?  @db.Decimal(2, 0)
+  clncommission    Decimal?  @db.Decimal
+  pxcommission     Decimal?  @db.Decimal
+  order_id         Int       @id @default(autoincrement())
+  coverage         String?   @db.VarChar(1000)
+  patient          Int?
+  log              String?   @db.VarChar(1000)
+  datepending      DateTime? @db.Time(6)
+  datequote        DateTime? @db.Time(6)
+  dateproposal     DateTime? @db.Time(6)
+  dateawaitsrx     DateTime? @db.Time(6)
+  dateaccepted     DateTime? @db.Time(6)
+  datecancelled    DateTime? @db.Time(6)
+  dateprescreening DateTime? @db.Time(6)
+  message          Boolean?
+  datescriptin     DateTime? @db.Timestamp(6)
+  doctor           Int?
+}
+
+model patient {
+  patient_id          Int       @id @default(autoincrement())
+  name                String?   @db.VarChar(40)
+  date_of_birth       DateTime? @db.Date
+  address             String?   @db.VarChar(40)
+  city                String?   @db.VarChar(40)
+  postal_code         String?   @db.VarChar(10)
+  phone_number        String?   @db.VarChar(40)
+  phone_secondary     String?   @db.VarChar(40)
+  email               String?   @db.VarChar(40)
+  health_card         String?   @db.VarChar(40)
+  info_agree          Boolean?
+  drug_allergies_list String?   @db.VarChar(400)
+  insurance           Boolean?
+  insurance_name      String?   @db.VarChar(200)
+  name_on_card        String?   @db.VarChar(40)
+  carrier_code        String?   @db.VarChar(200)
+  group_policy        String?   @db.VarChar(40)
+  certificate_id      String?   @db.VarChar(40)
+  sec_insurance_name  String?   @db.VarChar(40)
+  sec_name_on_card    String?   @db.VarChar(40)
+  sec_carrier_code    String?   @db.VarChar(40)
+  sec_group_policy    String?   @db.VarChar(40)
+  sec_certificate_id  String?   @db.VarChar(40)
+  medicalinfo         String?   @db.VarChar(1000)
+}
+
+model prescreening {
+  pscreen_id Int @id
+}
+
+model users {
+  user_id    Int     @id @default(autoincrement())
+  username   String? @db.VarChar(40)
+  password   String? @db.VarChar(40)
+  name       String? @db.VarChar(40)
+  lastname   String? @db.VarChar(40)
+  role       Int?
+  buargument String? @db.VarChar(100)
+  bu         Int?
+  buname     String? @db.VarChar(100)
+}
