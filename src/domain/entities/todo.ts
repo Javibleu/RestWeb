@@ -1,7 +1,7 @@
 
 
 
-class TodoEntity {
+export class TodoEntity {
     constructor(
         public id:number,
         public title:string,
