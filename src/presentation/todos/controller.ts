@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data/postgres";
 import { CreateTodoDto } from "../../domain/dtos";
-
+import { UpdateTodoDto } from "../../domain/dtos/todos/update-todo";
 
 /**
  * Controller class for managing todos.
@@ -63,32 +63,37 @@ export class TodosController {
 
     public updateTodo = async (req: Request, res: Response): Promise<Response> => {
         const id = Number(req.params.id);
-        const { title, completedAt } = req.body;
-
-        if (isNaN(id)) {
-            return res.status(400).json({ error: 'ID must be a number' });
+        const dto = UpdateTodoDto.create(req.body);
+        try {
+            
+            if (isNaN(id)) {
+                return res.status(400).json({ error: 'ID must be a number' });
+            }
+            const todo = await prisma.todo.findUnique({ where: { id } });
+            
+            if (!todo) {
+                return res.status(404).json({ Error: `Todo with id ${id} not found` });
+            }
+            
+            if (dto.error) {
+                return res.status(400).json({ error: dto.error });
+            }
+            
+            const updTodo = {
+                title: dto.dto?.title,
+                completedAt: dto.dto?.completedAt
+            }
+            
+            const newTodo = await prisma.todo.update({ where: { id }, data: updTodo });
+            return res.status(200).json({ message: 'Todo updated successfully', todo: newTodo });
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
         }
-        const todo = await prisma.todo.findUnique({ where: { id } });
-
-        if (!todo) {
-            return res.status(404).json({ Error: `Todo with id ${id} not found` })
         }
-
-        todo.title = title || todo.title;
-        if (completedAt) {
-            todo.completedAt = new Date(completedAt);
-        } else {
-            todo.completedAt = todo.completedAt;
-        }
-
-        const newTodo = await prisma.todo.update({ where: { id }, data: todo });
-
-        return res.status(200).json({ message: 'Todo updated successfully', todo: newTodo });
-    }
-
-    public deleteTodo = async (req: Request, res: Response): Promise<Response> => {
-        const id = Number(req.params.id);
-
+        
+        public deleteTodo = async (req: Request, res: Response): Promise<Response> => {
+            const id = Number(req.params.id);
+            
         if (isNaN(id)) {
             return res.status(400).json({ error: 'ID must be a number' });
         }
