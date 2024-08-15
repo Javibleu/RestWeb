@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { TodosController } from "./controller";
+import { PostgresDataSource } from "../../infrastructure/datasource/todo.datasource";
+import { TodoRepositoryImp } from "../../infrastructure/repository/todo.repository";
 
 
 
@@ -9,7 +11,10 @@ export class TodoRoutes {
         
         const router: Router = Router();
 
-        const todosController = new TodosController(); // DI
+        const datasource = new PostgresDataSource(); // create datasource
+        const todoRepository = new TodoRepositoryImp(datasource); // inject datasource
+
+        const todosController = new TodosController(todoRepository); // DI
     
         router.get('/todos', todosController.getTodos);
         router.get('/todos/:id', todosController.getTodoById);
